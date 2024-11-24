@@ -1,4 +1,5 @@
 import {React,useState} from "react";
+import { useNavigate } from "react-router-dom";
 import "./home.css";
 import Delivery from "../imgs/delivery.png";
 import Popular from "./Category/Popular";
@@ -6,6 +7,7 @@ import Navbar from './Navbar'
 
 function Home() {
   const [scrollPosition, setScrollPosition] = useState(0);
+  const navigate = useNavigate();
 
   document.title = "Amazon"
 
@@ -34,7 +36,10 @@ function Home() {
                 your orders.
               </p>
             </div>
-            <button onClick={handleScroll} className="browse-btn">Browse products</button>
+            <div className="button-container">
+              <button onClick={handleScroll} className="browse-btn">Browse products</button>
+              <button onClick={() => navigate('/categories')} className="browse-btn">Shop by Categories</button>
+            </div>
           </div>
           <img src={Delivery} className="delivery" />
           <Popular />

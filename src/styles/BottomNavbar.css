@@ -1,0 +1,70 @@
+.bottom-navbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 8px 0;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    padding: 4px 8px;
+    min-width: 56px;
+    color: #232f3e;
+    transition: color 0.2s ease;
+}
+
+.nav-item:active {
+    color: #f08804;
+}
+
+.nav-icon {
+    font-size: 1.5rem;
+    margin-bottom: 4px;
+}
+
+.nav-item span {
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+.rufus-item {
+    background-color: #232f3e;
+    color: white;
+    border-radius: 8px;
+    padding: 4px 12px;
+}
+
+.rufus-item:active {
+    background-color: #374759;
+    color: white;
+}
+
+/* Adjust main content to account for bottom navbar */
+.categories-container {
+    padding-bottom: 80px !important;
+}
+
+@media screen and (max-width: 768px) {
+    .nav-icon {
+        font-size: 1.3rem;
+    }
+
+    .nav-item span {
+        font-size: 0.65rem;
+    }
+
+    .nav-item {
+        padding: 4px 6px;
+        min-width: 48px;
+    }
+}

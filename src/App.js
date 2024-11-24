@@ -14,6 +14,7 @@ import Payment from "./Components/Payment";
 import Profile from "./Components/Profile";
 import Orders from "./Components/Orders";
 import Error from "./Components/Error";
+import Categories from "./Components/Categories";
 
 const auth = getAuth(app);
 
@@ -56,6 +57,7 @@ function App() {
             <Route path="/orders" element={<Orders />} />
             <Route path="/account" element={<Profile />} />
             <Route path="/product/:id" element={<ProductPage />} />
+            <Route path="/categories" element={<Categories />} />
             <Route path="*" element={<Error/>} />
           </>
         )}

@@ -47,23 +47,25 @@
   }
 }
 
+.button-container {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
 .browse-btn {
   cursor: pointer;
-  background-color: white;
-  border-radius: 40px;
-  color: rgb(233, 147, 23);
-  border: none;
-  box-shadow: rgba(50, 50, 93, 0.13) 0px 13px 27px -5px,
-    rgba(0, 0, 0, 0.088) 0px 8px 16px -8px;
-  font-family: sans-serif;
-  font-weight: 600;
-  font-size: 17px;
-  padding: 15px;
+  padding: 12px 24px;
+  font-size: 16px;
+  background-color: #f0c14b;
+  border: 1px solid #a88734;
+  border-radius: 4px;
+  transition: all 0.2s;
   animation: animate1 0.4s ease;
-  transition: all 0.16s ease;
 }
 
 .browse-btn:hover {
+  background-color: #f4d078;
   transform: scale(1.04);
 }
 
