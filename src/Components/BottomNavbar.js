@@ -19,23 +19,23 @@ const BottomNavbar = () => {
             </div>
             <div className="nav-item" onClick={() => handleNavigation('/account')}>
                 <FaUser className="nav-icon" />
-                <span>Account</span>
-            </div>
-            <div className="nav-item" onClick={() => handleNavigation('/cart')}>
-                <FaShoppingCart className="nav-icon" />
-                <span>Cart</span>
-            </div>
-            <div className="nav-item rufus-item">
-                <FaRobot className="nav-icon rufus-icon" />
-                <span>Rufus AI</span>
+                <span>You</span>
             </div>
             <div className="nav-item">
                 <BsThreeDots className="nav-icon" />
                 <span>More</span>
             </div>
+            <div className="nav-item" onClick={() => handleNavigation('/cart')}>
+                <FaShoppingCart className="nav-icon" />
+                <span>Cart</span>
+            </div>
             <div className="nav-item">
                 <FaBars className="nav-icon" />
                 <span>Menu</span>
+            </div>
+            <div className="nav-item rufus-item">
+                <FaRobot className="nav-icon rufus-icon" />
+                <span>Rufus AI</span>
             </div>
         </div>
     );

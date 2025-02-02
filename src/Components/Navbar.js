@@ -12,6 +12,7 @@ import "./navbar.css";
 import { app } from "../Firebase";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import swal from "sweetalert";
+import { DarkModeSwitch } from "react-toggle-dark-mode";
 
 const auth = getAuth(app);
 
@@ -22,6 +23,7 @@ function Navbar() {
   const [user, setUser] = useState(null);
   const [searchText, setSearchText] = useState("");
   const [Products, setProducts] = useState([]);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   const navigate = useNavigate();
 
@@ -78,9 +80,13 @@ function Navbar() {
     0
   );
 
+  const handleToggleChange = (isDark) => {
+    setIsDarkMode(isDark);
+  };
+
   return (
     <>
-      <div className="navbar">
+      <div className={`navbar ${isDarkMode ? 'dark-mode' : ''}`}> 
         <div className="left-section">
           <img
             onClick={() => {
@@ -134,7 +140,14 @@ function Navbar() {
             <button className="search-btn">
               <img src={search} className="search-img" />
             </button>
+            <DarkModeSwitch
+              checked={isDarkMode}
+              onChange={handleToggleChange}
+              size={60}
+              style={{ marginLeft: "10px" }}
+            />
           </div>
+
         </div>
         <div className="right-section">
           <img

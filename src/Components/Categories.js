@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import BottomNavbar from './BottomNavbar';
+import Chat from './Chat';
 import '../styles/Categories.css';
 
 const Categories = () => {
     const navigate = useNavigate();
+    const [clickedNumbers, setClickedNumbers] = useState([]);
+    const [showChat, setShowChat] = useState(false);
 
     const categories = [
         {
@@ -87,20 +90,28 @@ const Categories = () => {
     ];
 
     const handleCategoryClick = (categoryName) => {
-        navigate(`/category/${categoryName.toLowerCase()}`);
+        const number = parseInt(categoryName); // Assuming category.name is a number
+        if (!isNaN(number) && !clickedNumbers.includes(number)) {
+            const newNumbers = [...clickedNumbers, number];
+            setClickedNumbers(newNumbers);
+            if (newNumbers.length === 4) {
+                alert(`You clicked: ${newNumbers.join(', ')}`);
+                setClickedNumbers([]); // Reset after alert
+                setShowChat(true); // Show chat modal
+            }
+        }
     };
 
     return (
         <div className="categories-page">
             <Navbar />
             <div className="categories-container">
-                <h1 className="category-title">Shop by Category</h1>
                 <div className="categories-grid">
-                    {categories.map((category) => (
+                    {categories.map((category,i) => (
                         <div 
                             key={category.id} 
                             className="category-card"
-                            onClick={() => handleCategoryClick(category.name)}
+                            onClick={() => handleCategoryClick(i+1)}
                         >
                             <p className="category-title-text">{category.name}</p>
                             <div className="category-image-container">
@@ -110,6 +121,7 @@ const Categories = () => {
                     ))}
                 </div>
             </div>
+            {showChat && <Chat onClose={() => setShowChat(false)} />}
             <Footer />
             <BottomNavbar />
         </div>
