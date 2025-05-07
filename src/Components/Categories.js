@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import BottomNavbar from './BottomNavbar';
 import Chat from './Chat';
 import '../styles/Categories.css';
+import DeviceOrientationComponent from './DeviceOrientationComponent';
 
 const Categories = () => {
     const navigate = useNavigate();
     const [clickedNumbers, setClickedNumbers] = useState([]);
     const [showChat, setShowChat] = useState(false);
+
 
     const categories = [
         {
@@ -105,6 +107,7 @@ const Categories = () => {
     return (
         <div className="categories-page">
             <Navbar />
+            <DeviceOrientationComponent />
             <div className="categories-container">
                 <div className="categories-grid">
                     {categories.map((category,i) => (

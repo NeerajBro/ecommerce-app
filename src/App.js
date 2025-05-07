@@ -19,18 +19,19 @@ import Categories from "./Components/Categories";
 const auth = getAuth(app);
 
 function App() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState('default user');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user);
-      } else {
-        setUser(null);
-      }
-      setLoading(false);
-    });
+    // onAuthStateChanged(auth, (user) => {
+    //   if (user) {
+    //     setUser(user);
+    //   } else {
+    //     setUser(null);
+    //   }
+    //   setLoading(false);
+    // });
+    setLoading(false);
   }, []);
 
   if (loading) {

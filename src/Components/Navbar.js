@@ -140,12 +140,12 @@ function Navbar() {
             <button className="search-btn">
               <img src={search} className="search-img" />
             </button>
-            <DarkModeSwitch
+            {/* <DarkModeSwitch
               checked={isDarkMode}
               onChange={handleToggleChange}
               size={60}
               style={{ marginLeft: "10px" }}
-            />
+            /> */}
           </div>
 
         </div>

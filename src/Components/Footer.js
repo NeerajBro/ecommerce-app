@@ -5,14 +5,14 @@ import Logo from "../imgs/logo2.png";
 function Footer() {
   return (
     <>
-      <div className="footer">
+      {/* <div className="footer">
         <div className="disclaimer-area">
           <p className="disclaimer-desc">
             <b>Disclaimer:</b> This Amazon clone project is a mere simulation
             and is not affiliated with Amazon in any way.
           </p>
         </div>
-      </div>
+      </div> */}
       <div className="extra-data">
         <div className="link-section">
           <div className="first-row">

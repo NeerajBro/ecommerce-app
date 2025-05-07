@@ -7,6 +7,7 @@ const server = http.createServer(app);
 const io = socketIo(server, {
     cors: {
         origin: "http://localhost:3000", // Replace with your client's origin
+        methods: ["GET", "POST"],
     }
 });
 
@@ -16,10 +17,16 @@ app.get('/', (req, res) => {
 
 io.on('connection', (socket) => {
     console.log('a user connected');
-    
+
+    socket.on('join room', (roomName) => {
+        socket.join(roomName);
+        socket.room = roomName;
+        console.log(`User joined room: ${roomName}`);
+    });
+
     socket.on('chat message', (msg) => {
-        console.log("messaged recie",msg);
-        io.emit('chat message', { text: msg, sender: 'bot', status: 'sent' });
+        console.log("message recvd", msg);
+        io.to(socket.room).emit('chat message', { text: msg, sender: socket.id, status: 'sent' });
     });
 
     socket.on('disconnect', () => {
@@ -28,5 +35,5 @@ io.on('connection', (socket) => {
 });
 
 server.listen(3001, () => {
-    console.log('listening on *:3000');
+    console.log('listening on *:3001');
 });
