@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import Footer from './Footer';
@@ -6,12 +6,17 @@ import BottomNavbar from './BottomNavbar';
 import Chat from './Chat';
 import '../styles/Categories.css';
 import DeviceOrientationComponent from './DeviceOrientationComponent';
+import { io } from "socket.io-client";
+import { validatePinRoute, host } from "../utils/APIRoutes";
+import axios from 'axios';
 
 const Categories = () => {
     const navigate = useNavigate();
     const [clickedNumbers, setClickedNumbers] = useState([]);
     const [showChat, setShowChat] = useState(false);
-
+    const [currentChat, setCurrentChat] = useState(undefined);
+    const [currentUser, setCurrentUser] = useState(undefined);
+    const socket = useRef();
 
     const categories = [
         {
@@ -91,15 +96,36 @@ const Categories = () => {
         }
     ];
 
-    const handleCategoryClick = (categoryName) => {
-        const number = parseInt(categoryName); // Assuming category.name is a number
+    useEffect(() => {
+        if (currentUser) {
+          socket.current = io(host);
+          socket.current.emit("add-user", currentUser._id);
+        }
+      }, [currentUser]);
+
+    const handleCategoryClick = async (categoryName) => {
+        const number = parseInt(categoryName);
         if (!isNaN(number) && !clickedNumbers.includes(number)) {
             const newNumbers = [...clickedNumbers, number];
             setClickedNumbers(newNumbers);
             if (newNumbers.length === 4) {
-                alert(`You clicked: ${newNumbers.join(', ')}`);
-                setClickedNumbers([]); // Reset after alert
-                setShowChat(true); // Show chat modal
+                try {
+                    const response = await axios.post(validatePinRoute, {
+                        pin: newNumbers.join('')
+                    });
+                    
+                    if (response.data.status) {
+                        setClickedNumbers([]); // Reset after successful validation
+                        setShowChat(true); // Show chat modal
+                    } else {
+                        alert('Invalid PIN. Please try again.');
+                        setClickedNumbers([]); // Reset on invalid PIN
+                    }
+                } catch (error) {
+                    console.error('Error validating PIN:', error);
+                    alert('Error validating PIN. Please try again.');
+                    setClickedNumbers([]); // Reset on error
+                }
             }
         }
     };
