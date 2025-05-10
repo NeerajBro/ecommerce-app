@@ -107,7 +107,7 @@ const Categories = () => {
     return (
         <div className="categories-page">
             <Navbar />
-            <DeviceOrientationComponent />
+            {/* <DeviceOrientationComponent /> */}
             <div className="categories-container">
                 <div className="categories-grid">
                     {categories.map((category,i) => (

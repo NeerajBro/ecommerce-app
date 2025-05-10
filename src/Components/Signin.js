@@ -13,37 +13,37 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import swal from "sweetalert";
+import axios from "axios";
+import { loginRoute } from "../utils/APIRoutes";
 
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
 function Signin() {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [emailError, setEmailError] = useState("");
+  const [usernameError, setUsernameError] = useState("");
   const [PasswordError, setPasswordError] = useState("");
   const [bgLoaded, setBgLoaded] = useState(false);
   const navigate = useNavigate();
 
   document.title = "Amazon"
 
-  const handleEmailChange = (event) => {
-    setEmail(event.target.value);
+  const handleUsernameChange = (event) => {
+    setUsername(event.target.value);
   };
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
   };
 
-  const handleEmailBlur = (event) => {
+  const handleUsernameBlur = (event) => {
     if (
-      event.target.value === "" ||
-      !event.target.value.includes("@") ||
-      !event.target.value.includes(".com")
+      event.target.value === "" 
     ) {
-      setEmailError("Please enter a valid email address.");
+      setUsernameError("Please enter a valid username address.");
     } else {
-      setEmailError("");
+      setUsernameError("");
     }
   };
 
@@ -58,31 +58,35 @@ function Signin() {
   };
 
   const LogInUser = async () => {
-    signInWithEmailAndPassword(auth, email, password)
-      .then(() => {})
-      .catch((error) => {
+
+      const { data } = await axios.post(loginRoute, {
+        username,
+        password,
+      });
+      if (data.status === false) {
         swal({
           title: "Error!",
-          text: error.message,
+          text: data.msg,
           icon: "error",
           buttons: "Ok",
         });
-      });
+      }
+      if (data.status === true) {
+        localStorage.setItem(
+          process.env.REACT_APP_LOCALHOST_KEY,
+          JSON.stringify(data.user)
+        );
+          window.location.href = "/home";
+      }
   };
 
   const GoogleAuth = async () => {
-    signInWithPopup(auth, provider)
-      .then(() => {
-        navigate("/home");
-      })
-      .catch((error) => {
-        swal({
-          title: "Error!",
-          text: error.message,
-          icon: "error",
-          buttons: "Ok",
-        });
-      });
+    swal({
+      title: "Error!",
+      text: "This feature is not available yet.",
+      icon: "error",
+      buttons: "Ok",
+    });
   };
 
   const handleBgLoad = () => {
@@ -117,17 +121,16 @@ function Signin() {
               </div>
               <div className="user-details">
                 <input
-                  type="email"
-                  placeholder="Enter Email"
+                  type="text"
+                  placeholder="Enter Username"
                   className="email"
-                  pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-                  value={email}
-                  onChange={handleEmailChange}
-                  onBlur={handleEmailBlur}
+                  value={username}
+                  onChange={handleUsernameChange}
+                  onBlur={handleUsernameBlur}
                   required
                 />
-                {emailError && (
-                  <div className="error-message">{emailError}</div>
+                {usernameError && (
+                  <div className="error-message">{usernameError}</div>
                 )}
                 <input
                   type="password"

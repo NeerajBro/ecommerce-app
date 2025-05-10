@@ -19,18 +19,18 @@ import Categories from "./Components/Categories";
 const auth = getAuth(app);
 
 function App() {
-  const [user, setUser] = useState('default user');
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // onAuthStateChanged(auth, (user) => {
-    //   if (user) {
-    //     setUser(user);
-    //   } else {
-    //     setUser(null);
-    //   }
-    //   setLoading(false);
-    // });
+    if (localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
+      setUser(
+        JSON.parse(
+          localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
+        )
+      );
+      setLoading(false);
+    }
     setLoading(false);
   }, []);
 
