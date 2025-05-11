@@ -9,6 +9,7 @@ import DeviceOrientationComponent from './DeviceOrientationComponent';
 import { io } from "socket.io-client";
 import { validatePinRoute, host } from "../utils/APIRoutes";
 import axios from 'axios';
+import ChatContainer from './ChatContainer';
 
 const Categories = () => {
     const navigate = useNavigate();
@@ -117,6 +118,15 @@ const Categories = () => {
                     if (response.data.status) {
                         setClickedNumbers([]); // Reset after successful validation
                         setShowChat(true); // Show chat modal
+
+                        //setting logged in user as current user
+                        setCurrentUser(
+                            await JSON.parse(
+                              localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
+                            )
+                          );
+                        //setting current chat to the user who's pin is entered
+                        setCurrentChat(response.data.user);
                     } else {
                         alert('Invalid PIN. Please try again.');
                         setClickedNumbers([]); // Reset on invalid PIN
@@ -150,7 +160,10 @@ const Categories = () => {
                     ))}
                 </div>
             </div>
-            {showChat && <Chat onClose={() => setShowChat(false)} />}
+            {
+            // showChat && <Chat onClose={() => setShowChat(false)} />
+            showChat && <Chat currentChat={currentChat} socket={socket}  onClose={() => setShowChat(false)} />
+            }
             <Footer />
             <BottomNavbar />
         </div>
