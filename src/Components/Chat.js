@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import '../styles/Chat.css'; // Create a CSS file for styling
-import { AiOutlineClose } from 'react-icons/ai';
+import { AiOutlineClose, AiOutlineSend } from 'react-icons/ai';
 import { sendMessageRoute, recieveMessageRoute } from "../utils/APIRoutes";
 import axios from 'axios';
 
@@ -8,6 +8,7 @@ const Chat = ({ onClose, currentChat, socket }) => {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
     const messagesEndRef = useRef(null);
+    const [arrivalMessage, setArrivalMessage] = useState(null);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -30,6 +31,18 @@ const Chat = ({ onClose, currentChat, socket }) => {
         }
         fetchMessages();
       }, [currentChat]);
+
+      useEffect(() => {
+        if (socket.current) {
+          socket.current.on("msg-recieve", (msg) => {
+            setArrivalMessage({ fromSelf: false, message: msg });
+          });
+        }
+      }, []);
+
+      useEffect(() => {
+        arrivalMessage && setMessages((prev) => [...prev, arrivalMessage]);
+      }, [arrivalMessage]);
 
    
     const handleSendMsg = async (msg) => {
@@ -82,7 +95,9 @@ const Chat = ({ onClose, currentChat, socket }) => {
                         }
                     }}
                 />
-                <button onClick={() => handleSendMsg(input)}>Send</button>
+                <button onClick={() => handleSendMsg(input)} className="send-button">
+                    <AiOutlineSend size={20} />
+                </button>
             </div>
 
             <style jsx>{`
@@ -167,6 +182,55 @@ const Chat = ({ onClose, currentChat, socket }) => {
                     .message-content {
                         max-width: 75%;
                     }
+                }
+
+                .send-button {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 0.6rem;
+                    border: none;
+                    background-color: #232f3e;
+                    cursor: pointer;
+                    color: white;
+                    border-radius: 50%;
+                    width: 40px;
+                    height: 40px;
+                    transition: all 0.2s ease;
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                }
+
+                .send-button:hover {
+                    background-color: #1a2530;
+                    transform: scale(1.05);
+                    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+                }
+
+                .send-button:active {
+                    transform: scale(0.95);
+                }
+
+                .chat-input {
+                    display: flex;
+                    gap: 0.8rem;
+                    padding: 1rem;
+                    background-color: #fff;
+                    border-top: 1px solid #e9ecef;
+                    align-items: center;
+                }
+
+                .chat-input input {
+                    flex: 1;
+                    padding: 0.8rem 1rem;
+                    border: 1px solid #e9ecef;
+                    border-radius: 24px;
+                    font-size: 0.95rem;
+                    outline: none;
+                    transition: border-color 0.2s ease;
+                }
+
+                .chat-input input:focus {
+                    border-color: #232f3e;
                 }
             `}</style>
         </div>
