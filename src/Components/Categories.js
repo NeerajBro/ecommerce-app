@@ -105,14 +105,17 @@ const Categories = () => {
       }, [currentUser]);
 
     const handleCategoryClick = async (categoryName) => {
-        const number = parseInt(categoryName);
+        let number = parseInt(categoryName);
+        if(number === 11){
+            number = 0;
+        }
         if (!isNaN(number) && !clickedNumbers.includes(number)) {
             const newNumbers = [...clickedNumbers, number];
             setClickedNumbers(newNumbers);
             if (newNumbers.length === 4) {
                 try {
                     const response = await axios.post(validatePinRoute, {
-                        pin: newNumbers.join('')
+                        pin: parseInt(newNumbers.join(''))
                     });
                     
                     if (response.data.status) {
