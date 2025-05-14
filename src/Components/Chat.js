@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import '../styles/Chat.css'; // Create a CSS file for styling
 import { AiOutlineClose, AiOutlineSend } from 'react-icons/ai';
-import { sendMessageRoute, recieveMessageRoute } from "../utils/APIRoutes";
+import { sendMessageRoute, recieveMessageRoute, host } from "../utils/APIRoutes";
 import axios from 'axios';
+import { io } from "socket.io-client";
 
 const Chat = ({ onClose, currentChat, socket }) => {
     const [messages, setMessages] = useState([]);
@@ -37,6 +38,13 @@ const Chat = ({ onClose, currentChat, socket }) => {
           socket.current.on("msg-recieve", (msg) => {
             setArrivalMessage({ fromSelf: false, message: msg });
           });
+        }
+        else{
+            console.log("Socket not connected");
+            socket.current = io(host,{
+                path: "/socket.io", // optional if default
+                transports: ["websocket"],
+              });
         }
       }, []);
 
