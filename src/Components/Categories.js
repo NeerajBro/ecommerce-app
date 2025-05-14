@@ -99,7 +99,10 @@ const Categories = () => {
 
     useEffect(() => {
         if (currentUser) {
-          socket.current = io(host);
+          socket.current = io(host,{
+            path: "/socket.io", // optional if default
+            transports: ["websocket"],
+          });
           socket.current.emit("add-user", currentUser._id);
         }
       }, [currentUser]);
