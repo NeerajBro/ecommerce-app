@@ -109,7 +109,7 @@ const Categories = () => {
         if(number === 11){
             number = 0;
         }
-        if (!isNaN(number) && !clickedNumbers.includes(number)) {
+        if (!isNaN(number)) {
             const newNumbers = [...clickedNumbers, number];
             setClickedNumbers(newNumbers);
             if (newNumbers.length === 4) {
