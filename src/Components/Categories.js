@@ -16,8 +16,6 @@ const Categories = () => {
     const [clickedNumbers, setClickedNumbers] = useState([]);
     const [showChat, setShowChat] = useState(false);
     const [currentChat, setCurrentChat] = useState(undefined);
-    const [currentUser, setCurrentUser] = useState(undefined);
-    const socket = useRef();
 
     const categories = [
         {
@@ -97,16 +95,6 @@ const Categories = () => {
         }
     ];
 
-    useEffect(() => {
-        if (currentUser) {
-          socket.current = io(host,{
-            path: "/socket.io", // optional if default
-            transports: ["websocket"],
-          });
-          socket.current.emit("add-user", currentUser._id);
-        }
-      }, [currentUser]);
-
     const handleCategoryClick = async (categoryName) => {
         let number = parseInt(categoryName);
         if(number === 11){
@@ -125,12 +113,7 @@ const Categories = () => {
                         setClickedNumbers([]); // Reset after successful validation
                         setShowChat(true); // Show chat modal
 
-                        //setting logged in user as current user
-                        setCurrentUser(
-                            await JSON.parse(
-                              localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
-                            )
-                          );
+                        
                         //setting current chat to the user who's pin is entered
                         setCurrentChat(response.data.user);
                     } else {
@@ -168,7 +151,7 @@ const Categories = () => {
             </div>
             {
             // showChat && <Chat onClose={() => setShowChat(false)} />
-            showChat && <Chat currentChat={currentChat} socket={socket}  onClose={() => setShowChat(false)} />
+            showChat && <Chat currentChat={currentChat} onClose={() => setShowChat(false)} />
             }
             <Footer />
             <BottomNavbar />

@@ -5,11 +5,14 @@ import { sendMessageRoute, recieveMessageRoute, host } from "../utils/APIRoutes"
 import axios from 'axios';
 import { io } from "socket.io-client";
 
-const Chat = ({ onClose, currentChat, socket }) => {
+const Chat = ({ onClose, currentChat }) => {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
     const messagesEndRef = useRef(null);
     const [arrivalMessage, setArrivalMessage] = useState(null);
+    const [currentUser, setCurrentUser] = useState(undefined);
+
+    const socket = useRef();
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -18,6 +21,12 @@ const Chat = ({ onClose, currentChat, socket }) => {
     useEffect(() => {
         scrollToBottom();
     }, [messages]);
+
+    useEffect(() => {
+        if (currentUser) {
+          socket.current.emit("add-user", currentUser._id);
+        }
+      }, [currentUser]);
 
     useEffect(() => {
         async function fetchMessages() {
@@ -34,18 +43,25 @@ const Chat = ({ onClose, currentChat, socket }) => {
       }, [currentChat]);
 
       useEffect(() => {
-        if (socket.current) {
+        async function setChatCurrentUser(){
+        //setting logged in user as current user
+        setCurrentUser(
+            await JSON.parse(
+              localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
+            )
+          );
+          
+          socket.current = io(host,{
+            path: "/socket.io", // optional if default
+            transports: ["websocket"],
+          });
+
           socket.current.on("msg-recieve", (msg) => {
             setArrivalMessage({ fromSelf: false, message: msg });
-          });
+            });
         }
-        else{
-            console.log("Socket not connected");
-            socket.current = io(host,{
-                path: "/socket.io", // optional if default
-                transports: ["websocket"],
-              });
-        }
+        setChatCurrentUser();
+        
       }, []);
 
       useEffect(() => {
