@@ -11,6 +11,7 @@ const Chat = ({ onClose, currentChat }) => {
     const messagesEndRef = useRef(null);
     const [arrivalMessage, setArrivalMessage] = useState(null);
     const [currentUser, setCurrentUser] = useState(undefined);
+    const [revealedMessageIds, setRevealedMessageIds] = useState(new Set());
 
     const socket = useRef();
 
@@ -90,6 +91,50 @@ const Chat = ({ onClose, currentChat }) => {
         setInput('');
       };
 
+    // Update getFakeMessage to handle both user and bot messages
+    const getFakeMessage = (originalMessage, isUser) => {
+        const userResponses = {
+            default: "Hi, I need help with something",
+            order: "Can you check my order status?",
+            product: "I'm looking for electronics",
+            shipping: "When will my package arrive?",
+            payment: "How can I pay for my order?",
+            help: "Can you help me with my purchase?"
+        };
+
+        const botResponses = {
+            default: "I can help you find the perfect product!",
+            order: "Your order will be delivered within 2-3 business days.",
+            product: "We have a great selection of products at competitive prices.",
+            shipping: "We offer free shipping on orders over $50.",
+            payment: "We accept all major credit cards and digital payment methods.",
+            help: "Of course! What can I assist you with today?"
+        };
+
+        const responses = isUser ? userResponses : botResponses;
+        const msg = originalMessage.toLowerCase();
+
+        if (msg.includes('order')) return responses.order;
+        if (msg.includes('product')) return responses.product;
+        if (msg.includes('shipping')) return responses.shipping;
+        if (msg.includes('payment')) return responses.payment;
+        if (msg.includes('help')) return responses.help;
+        return responses.default;
+    };
+
+    // Add function to handle double click
+    const handleDoubleClick = (index) => {
+        setRevealedMessageIds(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(index)) {
+                newSet.delete(index);
+            } else {
+                newSet.add(index);
+            }
+            return newSet;
+        });
+    };
+
     return (
         <div className="chat-modal">
             <div className="chat-header">
@@ -98,9 +143,21 @@ const Chat = ({ onClose, currentChat }) => {
             </div>
             <div className="chat-messages">
                 {messages.map((msg, index) => (
-                    <div key={index} className={`chat-message ${msg.fromSelf ? 'user' : 'other'}`}>
+                    <div 
+                        key={index} 
+                        className={`chat-message ${msg.fromSelf ? 'user' : 'other'}`}
+                        onDoubleClick={() => handleDoubleClick(index)}
+                        // For mobile support
+                        onTouchEnd={(e) => {
+                            if (e.detail === 2) { // Check if double tap
+                                handleDoubleClick(index);
+                            }
+                        }}
+                    >
                         <div className="message-content">
-                            {msg.message}
+                            {revealedMessageIds.has(index)
+                                ? msg.message 
+                                : getFakeMessage(msg.message, msg.fromSelf)}
                             {msg.status === 'delivered' && <span className="status">✔✔</span>}
                         </div>
                     </div>
@@ -182,6 +239,9 @@ const Chat = ({ onClose, currentChat }) => {
                     line-height: 1.4;
                     position: relative;
                     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+                    user-select: none; /* Prevent text selection while pressing */
+                    transition: transform 0.1s ease;
+                    cursor: pointer;
                 }
 
                 .user .message-content {
@@ -255,6 +315,15 @@ const Chat = ({ onClose, currentChat }) => {
 
                 .chat-input input:focus {
                     border-color: #232f3e;
+                }
+
+                .message-content:active {
+                    transform: scale(0.98);
+                }
+
+                /* Add a subtle hint that messages are interactive */
+                .message-content:hover {
+                    opacity: 0.9;
                 }
             `}</style>
         </div>
